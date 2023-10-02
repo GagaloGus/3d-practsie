@@ -22,7 +22,6 @@ public class Player : MonoBehaviour
         
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            print("boinj");
             rb.velocity = new Vector3(rb.velocity.x, speed, rb.velocity.z);
         }
     }

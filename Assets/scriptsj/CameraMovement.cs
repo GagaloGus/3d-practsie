@@ -4,18 +4,20 @@ using UnityEngine;
 
 public class CameraMovement : MonoBehaviour
 {
-    public Transform playerTransform;
+    Transform playerTransform;
     public float mouseSentitivity = 2;
     private float verticalRotation = 0;
     // Start is called before the first frame update
     void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
+        playerTransform = transform.parent.transform.parent;
     }
 
     // Update is called once per frame
     void Update()
     {
+
 
         if(Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.RightAlt))
         {
@@ -29,7 +31,7 @@ public class CameraMovement : MonoBehaviour
 
             verticalRotation += mouseY;
             //verticalRotation = Mathf.Clamp(verticalRotation, -30, -150);
-            transform.localEulerAngles = Vector3.right * -1 * verticalRotation;
+            transform.localEulerAngles = -1 * verticalRotation * Vector3.right;
 
             playerTransform.Rotate(Vector3.up * mouseX);
         }
