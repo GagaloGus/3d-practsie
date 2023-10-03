@@ -611,8 +611,9 @@ GameObject:
   - component: {fileID: 1220626256}
   - component: {fileID: 1220626255}
   - component: {fileID: 1220626259}
+  - component: {fileID: 1220626260}
   m_Layer: 0
-  m_Name: Cube
+  m_Name: item
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -633,7 +634,7 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
@@ -698,9 +699,9 @@ Transform:
   m_GameObject: {fileID: 1220626254}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -19.383938, y: 2.61, z: 4.483616}
-  m_LocalScale: {x: 1.9221, y: 1.9221, z: 1.9221}
-  m_ConstrainProportionsScale: 0
+  m_LocalPosition: {x: -19.383938, y: 0.53, z: 4.483616}
+  m_LocalScale: {x: 0.1705071, y: 0.1705071, z: 0.1705071}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -716,6 +717,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ee816c143789fea4bb995b6d577a25f3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  score: 5
+--- !u!95 &1220626260
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1220626254}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: c1cb8a27084c4564ebebb48551107f72, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &1263901844
 GameObject:
   m_ObjectHideFlags: 0
@@ -744,7 +767,7 @@ Transform:
   m_GameObject: {fileID: 1263901844}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -17.284525, y: 0.7000452, z: -0.2916504}
+  m_LocalPosition: {x: -17.284525, y: 2.059, z: -0.2916504}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -763,7 +786,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 68fa1fd874a9490428ca67c9c0389f47, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 5
+  speed: 0
+  jumpForce: 0
+  isGrounded: 0
+  distance: 0
 --- !u!136 &1263901847
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -826,7 +852,7 @@ GameObject:
   - component: {fileID: 1478404201}
   - component: {fileID: 1478404200}
   - component: {fileID: 1478404199}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Plane
   m_TagString: Untagged
   m_Icon: {fileID: 0}

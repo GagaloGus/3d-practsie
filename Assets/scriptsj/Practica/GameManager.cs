@@ -68,6 +68,11 @@ public class GameManager : MonoBehaviour
         #endregion
     }
 
+    public void UpdateScore(int scoreToAdd)
+    {
+        FindObjectOfType<TextController>().StartScoreFade(scoreToAdd);
+    }
+
     public float _time
     {
         get { return time; }

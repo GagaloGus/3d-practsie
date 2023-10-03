@@ -18,7 +18,6 @@ public class CameraMovement : MonoBehaviour
     void Update()
     {
 
-
         if(Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.RightAlt))
         {
             Cursor.lockState = CursorLockMode.None;
@@ -36,4 +35,6 @@ public class CameraMovement : MonoBehaviour
             playerTransform.Rotate(Vector3.up * mouseX);
         }
     }
+
+    
 }

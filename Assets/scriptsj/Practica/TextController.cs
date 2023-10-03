@@ -18,28 +18,32 @@ public class TextController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //actualiza el tiempo
+        //actualiza el tiempo y la puntuacion
         timeText.text = $"Time: {string.Format("{0:0.##}", GameManager.instance._time)}";
+        scoreText.text = $"Score: {GameManager.instance._score}";
 
     }
 
-    public void StartFade()
+    public void StartScoreFade(int score)
     {
-        StartCoroutine(FadeinFadeoutText());
+        StartCoroutine(FadeinFadeoutText(score));
     }
 
-    IEnumerator FadeinFadeoutText()
+    IEnumerator FadeinFadeoutText(int scoreToAdd)
     {
         float count = 1;
         while (count >= 0)     
         {
             scoreText.color = new Color(1f, 1f, 1f, count);
             yield return new WaitForSeconds(1/100);
+            count -= 1 / 180f;
         }
+        GameManager.instance._score += scoreToAdd;
         while (count <= 1)
         {
             scoreText.color = new Color(1f, 1f, 1f, count);
             yield return new WaitForSeconds(1 / 100);
+            count += 1 / 180f;
         }
     }
 }
