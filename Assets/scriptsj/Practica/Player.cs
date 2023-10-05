@@ -5,13 +5,13 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     public int speed, jumpForce;
-    public bool isGrounded;
-    public float distance;
+    bool isGrounded;
+    float distance = 1;
     Rigidbody rb;
     // Start is called before the first frame update
     void Start()
     {
-       rb = GetComponent<Rigidbody>();
+        rb = GetComponent<Rigidbody>();
     }
 
     // Update is called once per frame
@@ -22,7 +22,7 @@ public class Player : MonoBehaviour
 
         rb.velocity = (transform.right * x + transform.forward * z) * speed + transform.up * rb.velocity.y;
         
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
         {
             rb.velocity = new Vector3(rb.velocity.x, jumpForce, rb.velocity.z);
         }
