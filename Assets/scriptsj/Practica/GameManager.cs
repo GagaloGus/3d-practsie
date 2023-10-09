@@ -11,6 +11,7 @@ public class GameManager : MonoBehaviour
     int score;
 
     string fileName = "playerData";
+    List<string> dateList = new List<string>();
     void Awake()
     {
         if (!instance) //comprueba que instance no tenga informacion
@@ -43,13 +44,23 @@ public class GameManager : MonoBehaviour
 
         void SaveGame()
         {
-            List<string> infoList = new List<string>
+            //añade la fecha en el momento de guardado
+            dateList.Add(System.DateTime.Now.ToString("HH:mm:ss"));
+
+            //crea una lista y guarda la posicion y rotacion del jugador
+            List<string> PlayerinfoList = new List<string>
             {
                 player.transform.position.ToString(),
                 player.transform.rotation.eulerAngles.ToString()
             };
 
-            TextFileManager.instance.Save(fileName, infoList);
+            //crea una tercera lista fusionando la del player y la de la fecha
+            List<string> dataToSave = new List<string>();
+            dataToSave.AddRange(PlayerinfoList);
+            dataToSave.AddRange(dateList);
+
+            //guarda los datos
+            TextFileManager.instance.Save(fileName, dataToSave);
             print("<color=green>Juego guardado !</color>");
         }
 
@@ -57,9 +68,19 @@ public class GameManager : MonoBehaviour
         {
             try
             {
+                //se guarda la lista de datos de guardado
                 List<string> loadData = TextFileManager.instance.Load(fileName);
+
+                //establece la posicion y rotacion del jugador
                 player.transform.position = StringToVector3(loadData[0]);
                 player.transform.rotation = Quaternion.Euler(StringToVector3(loadData[1]));
+
+                //se guarda las fechas de antes
+                for(int i = 2; i < loadData.Count; i++)
+                {
+                    dateList.Add(loadData[i]);
+                }
+
                 print("<color=cyan>Juego cargado !</color> ");
             }
             catch { Debug.LogWarning($"No hay ningun archivo de guardado aun \n Presiona G para guardar! "); }
@@ -70,7 +91,8 @@ public class GameManager : MonoBehaviour
 
     public void UpdateScore(int scoreToAdd)
     {
-        FindObjectOfType<TextController>().StartScoreFade(scoreToAdd);
+        score += scoreToAdd;
+        FindObjectOfType<TextController>().StartScoreFade();
     }
 
     public float _time

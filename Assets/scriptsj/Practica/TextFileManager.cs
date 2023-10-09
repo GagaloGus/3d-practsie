@@ -23,7 +23,7 @@ public class TextFileManager : AbstractFileManager
             }
             return result;
         }
-        else { return null; }
+        else { throw new Exception("No savefile"); }
     }
 
     public override void Save(string filename, List<string> content)

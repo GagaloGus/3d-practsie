@@ -6,14 +6,17 @@ public class RainbowColorChange : MonoBehaviour
 {
     Renderer rend;
     public int score;
+    float multiplier = 0.07f;
     void Start()
     {
         rend = GetComponent<Renderer>();
         StartCoroutine(ChangeCol());
         StartCoroutine(ChangePos());
-    }
 
-    
+        transform.position = transform.position + Vector3.up/2.5f;
+        GetComponent<Rigidbody>().AddForce(Vector3.up * multiplier * -1 * 180);
+
+    }
 
     IEnumerator ChangeCol()
     {
@@ -32,22 +35,23 @@ public class RainbowColorChange : MonoBehaviour
     }
     IEnumerator ChangePos()
     {
-        float count = -0.5f;
-        while (count < 0.5)
+        float count = 0;
+        
+        while (count < 1)
         {
-            transform.position = transform.position + Vector3.up * count/4 * 0.01f;
+            GetComponent<Rigidbody>().AddForce(Vector3.up * multiplier);
             yield return new WaitForSeconds(1 / 360);
 
             count += 1 / 360f;
         }
-
-        while (count > -0.5)
+        while (count > 0)
         {
-            transform.position = transform.position + Vector3.up * count/4 * 0.001f;
+            GetComponent<Rigidbody>().AddForce(Vector3.up * multiplier * -1);
             yield return new WaitForSeconds(1 / 360);
 
             count -= 1 / 360f;
         }
+
         StartCoroutine(ChangePos());
 
     }

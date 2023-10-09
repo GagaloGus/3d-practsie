@@ -27,6 +27,11 @@ public class Player : MonoBehaviour
             rb.velocity = new Vector3(rb.velocity.x, jumpForce, rb.velocity.z);
         }
 
+        if(transform.position.y < -10)
+        {
+            rb.velocity = new Vector3(rb.velocity.x, 20, rb.velocity.z);
+        }
+
         #region raycast
 
         isGrounded = 
