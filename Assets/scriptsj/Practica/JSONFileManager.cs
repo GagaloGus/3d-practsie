@@ -18,7 +18,7 @@ public class JSONFileManager : AbstractFileManager
     {
         if(File.Exists(filePath + filename + ".json")) 
         {
-            StreamReader sr = new StreamReader(filePath + filename + ".txt");
+            StreamReader sr = new StreamReader(filePath + filename + ".json");
             string jsonFile = sr.ReadToEnd();
 
             PlayerInfo info = JsonUtility.FromJson<PlayerInfo>(jsonFile);

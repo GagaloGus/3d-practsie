@@ -5,11 +5,12 @@ using TMPro;
 
 public class TextController : MonoBehaviour
 {
-    TMP_Text timeText, scoreText;
+    TMP_Text timeText, scoreText, altText;
     void Start()
     {
         timeText = transform.Find("time").gameObject.GetComponent<TMP_Text>();
         scoreText = transform.Find("score").gameObject.GetComponent<TMP_Text>();
+        altText = transform.Find("alt text").gameObject.GetComponent<TMP_Text>();
 
         timeText.text = "Time: 0";
         scoreText.text = "Score: 0";
@@ -20,6 +21,11 @@ public class TextController : MonoBehaviour
     {
         //actualiza el tiempo
         timeText.text = $"Time: {string.Format("{0:0.##}", GameManager.instance._time)}";
+
+        if(Input.GetKeyDown(KeyCode.LeftAlt) || Input.GetKeyDown(KeyCode.RightAlt))
+        {
+            altText.text = "";
+        }
     }
 
     public void StartScoreFade()
@@ -44,4 +50,6 @@ public class TextController : MonoBehaviour
             count += 1 / 60f;
         }
     }
+
+    
 }

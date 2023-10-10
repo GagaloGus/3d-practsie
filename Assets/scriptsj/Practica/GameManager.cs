@@ -1,6 +1,5 @@
-using System.Collections;
 using System.Collections.Generic;
-using System.Xml.Schema;
+using System.IO;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
@@ -27,11 +26,12 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         player = FindObjectOfType<Player>().gameObject;
+        
+        LoadInStartup();
     }
     private void Update()
     {
         time += Time.deltaTime;
-        #region save and load
         if (Input.GetKeyDown(KeyCode.G))
         {
             SaveGame();
@@ -42,73 +42,97 @@ public class GameManager : MonoBehaviour
             LoadGame();
         }
 
+    }
+    #region save and load
+    void SaveGame()
+    {
         saveDataType = FindObjectOfType<SwapJSONTXT>().value;
+        //añade la fecha en el momento de guardado
+        dateList.Add(System.DateTime.Now.ToString("HH:mm:ss"));
 
-        void SaveGame()
+        //crea una lista y guarda la posicion y rotacion del jugador
+        List<string> PlayerinfoList = new List<string>
         {
-            //añade la fecha en el momento de guardado
-            dateList.Add(System.DateTime.Now.ToString("HH:mm:ss"));
+            player.transform.position.ToString(),
+            player.transform.rotation.eulerAngles.ToString(),
+            score.ToString()
+        };
 
-            //crea una lista y guarda la posicion y rotacion del jugador
-            List<string> PlayerinfoList = new List<string>
-            {
-                player.transform.position.ToString(),
-                player.transform.rotation.eulerAngles.ToString(),
-                score.ToString()
-            };
+        //crea una tercera lista fusionando la del player y la de la fecha
+        List<string> dataToSave = new List<string>();
+        dataToSave.AddRange(PlayerinfoList);
+        dataToSave.AddRange(dateList);
 
-            //crea una tercera lista fusionando la del player y la de la fecha
-            List<string> dataToSave = new List<string>();
-            dataToSave.AddRange(PlayerinfoList);
-            dataToSave.AddRange(dateList);
-
-            //guarda los datos
-            if (saveDataType) 
-            { 
-                TextFileManager.instance.Save(fileName, dataToSave);
-            }
-            else 
-            { 
-                JSONFileManager.instance.Save(fileName, dataToSave);
-            }
-            print($"<color=green>Juego Guardado {(saveDataType ? "TXT" : "Json")} !</color> ");
-        }
-
-        void LoadGame()
+        //guarda los datos
+        if (saveDataType)
         {
-            try
-            {
-                //se guarda la lista de datos de guardado
-
-                List<string> loadData = new List<string>();
-                if (saveDataType)
-                {
-                    loadData = TextFileManager.instance.Load(fileName);
-                }
-                else
-                {
-                    loadData = JSONFileManager.instance.Load(fileName);
-                }
-
-                //establece la posicion y rotacion del jugador
-                player.transform.position = StringToVector3(loadData[0]);
-                player.transform.rotation = Quaternion.Euler(StringToVector3(loadData[1]));
-                score = int.Parse(loadData[2]);
-                //se guarda las fechas de antes
-                for(int i = 3; i < loadData.Count; i++)
-                {
-                    dateList.Add(loadData[i]);
-                }
-                print($"<color=cyan>Juego cargado { (saveDataType ? "TXT" :"Json")} !</color> ");
-                
-
-            }
-            catch { Debug.LogWarning($"No hay ningun archivo de guardado {(saveDataType ? "TXT" : "Json")} aún \n Presiona G para guardar! "); }
+            TextFileManager.instance.Save(fileName, dataToSave);
         }
-
-        #endregion
+        else
+        {
+            JSONFileManager.instance.Save(fileName, dataToSave);
+        }
+        print($"<color=green>Juego Guardado {(saveDataType ? "TXT" : "Json")} !</color> ");
     }
 
+    void LoadGame()
+    {
+        saveDataType = FindObjectOfType<SwapJSONTXT>().value;
+        try
+        {
+            //se guarda la lista de datos de guardado
+
+            List<string> loadData = new List<string>();
+            if (saveDataType)
+            {
+                loadData = TextFileManager.instance.Load(fileName);
+            }
+            else
+            {
+                loadData = JSONFileManager.instance.Load(fileName);
+            }
+
+            //establece la posicion y rotacion del jugador
+            player.transform.position = StringToVector3(loadData[0]);
+            player.transform.rotation = Quaternion.Euler(StringToVector3(loadData[1]));
+            score = 0;
+            UpdateScore(int.Parse(loadData[2]));
+            //se guarda las fechas de antes
+            for (int i = 3; i < loadData.Count; i++)
+            {
+                dateList.Add(loadData[i]);
+            }
+            print($"<color=cyan>Juego cargado {(saveDataType ? "TXT" : "Json")} !</color> ");
+
+
+        }
+        catch { Debug.LogWarning($"No hay ningun archivo de guardado {(saveDataType ? "TXT" : "Json")} aún \n Presiona G para guardar! "); }
+    }
+
+    void LoadInStartup()
+    {
+        string filepath = $"{Application.persistentDataPath}\\{fileName}";
+
+        if (File.Exists(filepath + ".txt") && File.Exists(filepath + ".json")){
+            string[] txtLines = TextFileManager.instance.Load(filepath).ToArray();
+            string[] jsonLines = JSONFileManager.instance.Load(filepath).ToArray();
+
+            int.Parse(txtLines[3]);
+        }
+        else if (File.Exists(filepath + ".txt")){
+            FindObjectOfType<SwapJSONTXT>().value = true;
+            LoadGame();
+        }
+        else if (File.Exists(filepath + ".json")){
+            FindObjectOfType<SwapJSONTXT>().value = false;
+            LoadGame();
+        }
+        else {
+            Debug.LogWarning($"No hay ningun archivo de guardado");
+        }
+    }
+
+    #endregion
     public void UpdateScore(int scoreToAdd)
     {
         score += scoreToAdd;
