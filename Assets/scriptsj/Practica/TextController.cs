@@ -6,16 +6,19 @@ using TMPro;
 public class TextController : MonoBehaviour
 {
     TMP_Text timeText, scoreText, altText;
-    void Start()
+    void Awake()
     {
         timeText = transform.Find("time").gameObject.GetComponent<TMP_Text>();
         scoreText = transform.Find("score").gameObject.GetComponent<TMP_Text>();
         altText = transform.Find("alt text").gameObject.GetComponent<TMP_Text>();
-
-        timeText.text = "Time: 0";
-        scoreText.text = "Score: 0";
     }
 
+    private void Start()
+    {
+        timeText.text = "Time: 0";
+        scoreText.text = "Score: 0";
+        
+    }
     // Update is called once per frame
     void Update()
     {

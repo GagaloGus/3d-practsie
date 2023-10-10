@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using UnityEngine;
 
@@ -17,6 +19,7 @@ public class GameManager : MonoBehaviour
         {
             instance = this;
             DontDestroyOnLoad(gameObject);
+            player = FindObjectOfType<Player>().gameObject;
         }
         else //si tiene info, ya existe un GM
         {
@@ -25,8 +28,6 @@ public class GameManager : MonoBehaviour
     }
     private void Start()
     {
-        player = FindObjectOfType<Player>().gameObject;
-        
         LoadInStartup();
     }
     private void Update()
@@ -113,11 +114,18 @@ public class GameManager : MonoBehaviour
     {
         string filepath = $"{Application.persistentDataPath}\\{fileName}";
 
+        print($"{File.Exists(filepath + ".txt")}, {File.Exists(filepath + ".json")}");
         if (File.Exists(filepath + ".txt") && File.Exists(filepath + ".json")){
-            string[] txtLines = TextFileManager.instance.Load(filepath).ToArray();
-            string[] jsonLines = JSONFileManager.instance.Load(filepath).ToArray();
+            string[] txtLines = TextFileManager.instance.Load(fileName).ToArray();
+            string[] jsonLines = JSONFileManager.instance.Load(fileName).ToArray();
 
-            int.Parse(txtLines[3]);
+            DateTime txtTime = DateTime.ParseExact(txtLines[txtLines.Length-1], "HH:mm:ss",
+                                        CultureInfo.InvariantCulture);
+            DateTime jsonTime = DateTime.ParseExact(jsonLines[jsonLines.Length-1], "HH:mm:ss",
+                                        CultureInfo.InvariantCulture);
+
+            FindObjectOfType<SwapJSONTXT>().value = txtTime > jsonTime;
+            LoadGame();
         }
         else if (File.Exists(filepath + ".txt")){
             FindObjectOfType<SwapJSONTXT>().value = true;
