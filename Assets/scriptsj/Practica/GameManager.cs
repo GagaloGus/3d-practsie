@@ -9,7 +9,7 @@ public class GameManager : MonoBehaviour
     GameObject player;
     float time;
     int score;
-
+    bool saveDataType;
     string fileName = "playerData";
     List<string> dateList = new List<string>();
     void Awake()
@@ -42,6 +42,8 @@ public class GameManager : MonoBehaviour
             LoadGame();
         }
 
+        saveDataType = FindObjectOfType<SwapJSONTXT>().value;
+
         void SaveGame()
         {
             //añade la fecha en el momento de guardado
@@ -51,7 +53,8 @@ public class GameManager : MonoBehaviour
             List<string> PlayerinfoList = new List<string>
             {
                 player.transform.position.ToString(),
-                player.transform.rotation.eulerAngles.ToString()
+                player.transform.rotation.eulerAngles.ToString(),
+                score.ToString()
             };
 
             //crea una tercera lista fusionando la del player y la de la fecha
@@ -60,8 +63,15 @@ public class GameManager : MonoBehaviour
             dataToSave.AddRange(dateList);
 
             //guarda los datos
-            TextFileManager.instance.Save(fileName, dataToSave);
-            print("<color=green>Juego guardado !</color>");
+            if (saveDataType) 
+            { 
+                TextFileManager.instance.Save(fileName, dataToSave);
+            }
+            else 
+            { 
+                JSONFileManager.instance.Save(fileName, dataToSave);
+            }
+            print($"<color=green>Juego Guardado {(saveDataType ? "TXT" : "Json")} !</color> ");
         }
 
         void LoadGame()
@@ -69,21 +79,31 @@ public class GameManager : MonoBehaviour
             try
             {
                 //se guarda la lista de datos de guardado
-                List<string> loadData = TextFileManager.instance.Load(fileName);
+
+                List<string> loadData = new List<string>();
+                if (saveDataType)
+                {
+                    loadData = TextFileManager.instance.Load(fileName);
+                }
+                else
+                {
+                    loadData = JSONFileManager.instance.Load(fileName);
+                }
 
                 //establece la posicion y rotacion del jugador
                 player.transform.position = StringToVector3(loadData[0]);
                 player.transform.rotation = Quaternion.Euler(StringToVector3(loadData[1]));
-
+                score = int.Parse(loadData[2]);
                 //se guarda las fechas de antes
-                for(int i = 2; i < loadData.Count; i++)
+                for(int i = 3; i < loadData.Count; i++)
                 {
                     dateList.Add(loadData[i]);
                 }
+                print($"<color=cyan>Juego cargado { (saveDataType ? "TXT" :"Json")} !</color> ");
+                
 
-                print("<color=cyan>Juego cargado !</color> ");
             }
-            catch { Debug.LogWarning($"No hay ningun archivo de guardado aun \n Presiona G para guardar! "); }
+            catch { Debug.LogWarning($"No hay ningun archivo de guardado {(saveDataType ? "TXT" : "Json")} aún \n Presiona G para guardar! "); }
         }
 
         #endregion
@@ -105,17 +125,7 @@ public class GameManager : MonoBehaviour
         set { score = value; }
     }
 
-    public string _fileName
-    {
-        get { return fileName; }
-    }
-
-    public float MapValues(float value, float leftMin, float leftMax, float rightMin, float rightMax)
-    {
-        return rightMin + (value - leftMin) * (rightMax - rightMin) / (leftMax - leftMin);
-    }
-
-    public Vector3 StringToVector3(string s)
+    public static Vector3 StringToVector3(string s)
     {
         //por si acaso el string no empieza por ()
         if (s.StartsWith("(") && s.EndsWith(")")) s = s.Substring(1, s.Length - 2);

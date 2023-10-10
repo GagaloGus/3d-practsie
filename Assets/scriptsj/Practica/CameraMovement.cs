@@ -29,11 +29,12 @@ public class CameraMovement : MonoBehaviour
             float mouseY = Input.GetAxis("Mouse Y") * mouseSentitivity;
 
             verticalRotation += mouseY;
-            //verticalRotation = Mathf.Clamp(verticalRotation, -30, -150);
+            verticalRotation = Mathf.Clamp(verticalRotation, -90, 90);
             transform.localEulerAngles = -1 * verticalRotation * Vector3.right;
 
             playerTransform.Rotate(Vector3.up * mouseX);
         }
+
     }
 
     

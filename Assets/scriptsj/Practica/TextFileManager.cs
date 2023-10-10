@@ -7,7 +7,7 @@ using UnityEngine;
 public class TextFileManager : AbstractFileManager
 {
     public static TextFileManager instance = new TextFileManager();
-    string filePath = $"{Application.persistentDataPath}\\" ;
+    
     public override List<string> Load(string filename)
     {
         if(File.Exists(filePath + filename + ".txt")) 
@@ -23,7 +23,7 @@ public class TextFileManager : AbstractFileManager
             }
             return result;
         }
-        else { throw new Exception("No savefile"); }
+        else { throw new Exception("No txt savefile"); }
     }
 
     public override void Save(string filename, List<string> content)
