@@ -25,7 +25,7 @@ public class TextController : MonoBehaviour
         //actualiza el tiempo
         timeText.text = $"Time: {string.Format("{0:0.##}", GameManager.instance._time)}";
 
-        if(Input.GetKeyDown(KeyCode.LeftAlt) || Input.GetKeyDown(KeyCode.RightAlt))
+        if(Input.GetKeyDown(KeyCode.LeftAlt))
         {
             altText.text = "";
         }
@@ -45,6 +45,7 @@ public class TextController : MonoBehaviour
             yield return new WaitForSeconds(1/100);
             count -= 1 / 60f;
         }
+        //actualiza el texto solo, no la variable del gamemanager
         scoreText.text = $"Score: {GameManager.instance._score}";
         while (count <= 1)
         {

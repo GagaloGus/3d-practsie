@@ -82,7 +82,6 @@ public class GameManager : MonoBehaviour
         try
         {
             //se guarda la lista de datos de guardado
-
             List<string> loadData = new List<string>();
             if (saveDataType)
             {
@@ -93,9 +92,11 @@ public class GameManager : MonoBehaviour
                 loadData = JSONFileManager.instance.Load(fileName);
             }
 
-            //establece la posicion y rotacion del jugador
+            //establece la posicion, rotacion y puntaje del jugador
             player.transform.position = StringToVector3(loadData[0]);
             player.transform.rotation = Quaternion.Euler(StringToVector3(loadData[1]));
+            
+            //cambia el score a 0 y le añade todo el score de golpe
             score = 0;
             UpdateScore(int.Parse(loadData[2]));
             //se guarda las fechas de antes
@@ -113,24 +114,28 @@ public class GameManager : MonoBehaviour
     void LoadInStartup()
     {
         string filepath = $"{Application.persistentDataPath}\\{fileName}";
-
-        print($"{File.Exists(filepath + ".txt")}, {File.Exists(filepath + ".json")}");
+        //si existen ambos txt y json
         if (File.Exists(filepath + ".txt") && File.Exists(filepath + ".json")){
+            //se guardan todas las lineas de ambos archivos txt y json
             string[] txtLines = TextFileManager.instance.Load(fileName).ToArray();
             string[] jsonLines = JSONFileManager.instance.Load(fileName).ToArray();
 
+            //cambia la ultima linea de cada uno (fecha mas reciente) a DateTime
             DateTime txtTime = DateTime.ParseExact(txtLines[txtLines.Length-1], "HH:mm:ss",
                                         CultureInfo.InvariantCulture);
             DateTime jsonTime = DateTime.ParseExact(jsonLines[jsonLines.Length-1], "HH:mm:ss",
                                         CultureInfo.InvariantCulture);
 
+            //Carga el archivo segun el que tenga la fecha mas reciente
             FindObjectOfType<SwapJSONTXT>().value = txtTime > jsonTime;
             LoadGame();
         }
+        //si solo existe el txt
         else if (File.Exists(filepath + ".txt")){
             FindObjectOfType<SwapJSONTXT>().value = true;
             LoadGame();
         }
+        //si solo existe el json
         else if (File.Exists(filepath + ".json")){
             FindObjectOfType<SwapJSONTXT>().value = false;
             LoadGame();
@@ -160,7 +165,8 @@ public class GameManager : MonoBehaviour
     public static Vector3 StringToVector3(string s)
     {
         //por si acaso el string no empieza por ()
-        if (s.StartsWith("(") && s.EndsWith(")")) s = s.Substring(1, s.Length - 2);
+        if (s.StartsWith("(") && s.EndsWith(")"))
+            s = s.Substring(1, s.Length - 2);
 
         string[] division = s.Split(',');
 

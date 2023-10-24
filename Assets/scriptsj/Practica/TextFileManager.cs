@@ -10,6 +10,7 @@ public class TextFileManager : AbstractFileManager
     
     public override List<string> Load(string filename)
     {
+        //si existe el archivo txt
         if(File.Exists(filePath + filename + ".txt")) 
         {
             StreamReader sr = new StreamReader(filePath + filename + ".txt");
